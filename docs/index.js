@@ -1,3 +1,18 @@
+// Task 1: Interactive Visualisation
+// Create a visualisation of your choice with the following interactions:
+// o Tooltips,
+// o Text/lineannotations,and
+// o One of the following filtering options (check the week-9 studio activities
+// for references)
+// ▪ Selection on the legend
+// ▪ Filtering with a selection menu
+// ▪ Filtering with a slider
+
+// Task 2: HTML Page
+// Construct an HTML page that includes at least two visualisations. 
+// This could be the map that you created in the week 9 homework and 
+// the visualisation you created in Task 1 of this homework.
+
 // const VegaLiteSpec = {
 //     $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
 //     title: 'Normalised Cell Tower Stations per Suburb in Victoria',
