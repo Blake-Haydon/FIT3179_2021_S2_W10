@@ -13,79 +13,40 @@
 // This could be the map that you created in the week 9 homework and 
 // the visualisation you created in Task 1 of this homework.
 
-// const VegaLiteSpec = {
-//     $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
-//     title: 'Normalised Cell Tower Stations per Suburb in Victoria',
-//     description: 'The count of cell towers distributed around australia per unit of area (cell towers/area)',
-//     width: 800,
-//     height: 600,
-
-//     layer: [
-//         {
-//             data: {
-//                 url: "https://raw.githubusercontent.com/Blake-Haydon/FIT3179_2021_S2_W9/main/docs/data/victoria.topo.json",
-//                 format: { type: "topojson", feature: "victoria" }
-//             },
-//             transform: [{
-//                 lookup: "id",
-//                 from: {
-//                     data: {
-//                         url: "https://raw.githubusercontent.com/Blake-Haydon/FIT3179_2021_S2_W9/main/docs/data/id_to_num_stations.csv"
-//                     },
-//                     key: "id",
-//                     fields: ["station_count_by_area"]
-//                 }
-//             }],
-//             mark: {
-//                 type: "geoshape"
-//             },
-//             encoding: {
-//                 color: {
-//                     field: "station_count_by_area",
-//                     type: "quantitative",
-//                     scale: {
-//                         type: "threshold",
-//                         domain: [50, 1000],
-//                         range: ["#b3cde3", "#8c96c6", "#88419d"],
-//                     }
-//                 },
-//                 tooltip: { field: "station_count_by_area", type: "quantitative", title: "Station Count by Area" }
-//             },
-//             projection: {
-//                 type: 'mercator'
-//             },
-//         },
-//         {
-//             data: {
-//                 url: "https://raw.githubusercontent.com/Blake-Haydon/FIT3179_2021_S2_W9/main/docs/data/victoria.topo.json",
-//                 format: { type: "topojson", feature: "victoria" }
-//             },
-//             transform: [{
-//                 lookup: "id",
-//                 from: {
-//                     data: {
-//                         url: "https://raw.githubusercontent.com/Blake-Haydon/FIT3179_2021_S2_W9/main/docs/data/id_to_num_stations.csv"
-//                     },
-//                     key: "id",
-//                     fields: ["station_count_by_area"]
-//                 }
-//             },
-//             {
-//                 // No stations
-//                 filter: "datum.station_count_by_area == 0"
-//             }
-//             ],
-//             mark: {
-//                 type: "geoshape",
-//                 color: "#edf8fb",
-//                 tooltip: "Deadzone: There are no cell towers here"
-//             },
-//             projection: {
-//                 type: 'mercator'
-//             }
-//         },
-//     ]
-// }
+const VegaLiteSpec = {
+    $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+    data: {
+        url: "data/internet_activity/internet_speeds.csv",
+        format: {
+            type: "csv"
+        }
+    },
+    width: 700,
+    height: 400,
+    mark: "bar",
+    encoding: {
+        x: {
+            field: "year",
+            type: "ordinal",
+            title: "Year"
+        },
+        y: {
+            field: "num_users",
+            aggregate: "sum",
+            type: "quantitative",
+            title: "Total Number of Internet Users [thousands]",
+        },
+        color: {
+            field: "speed",
+            title: "Speed Ranges",
+            scale: {
+                domain: ["< 256kbps", "256kbps - 512kbps", "512kbps - 1.5Mbps", "1.5Mbps - 8Mbps", "8Mbps - 24Mbps", "> 24Mbps"],
+                range: ["#f1eef6", "#d4b9da", "#c994c7", "#df65b0", "#dd1c77", "#980043"],
+                type: "ordinal",
+            },
+        }
+    }
+}
 
 
-// vegaEmbed('#vis', VegaLiteSpec);
+vegaEmbed('#vis', VegaLiteSpec);
