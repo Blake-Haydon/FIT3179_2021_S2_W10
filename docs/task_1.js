@@ -1,20 +1,3 @@
-// Task 1: Interactive Visualisation
-// Create a visualisation of your choice with the following interactions:
-// o Tooltips,
-// o Text/lineannotations,and
-// o One of the following filtering options (check the week-9 studio activities
-// for references)
-// ▪ Selection on the legend
-// ▪ Filtering with a selection menu
-// ▪ Filtering with a slider
-
-// Task 2: HTML Page
-// Construct an HTML page that includes at least two visualisations. 
-// This could be the map that you created in the week 9 homework and 
-// the visualisation you created in Task 1 of this homework.
-
-
-// TODO: ADD PERCENTAGES
 const VegaLiteSpec = {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     title: "Australian Internet Speeds over Time",
@@ -101,10 +84,10 @@ const VegaLiteSpec = {
                 },
             },
             y: {
-                field: "num_users",
+                field: "real_num_users",
                 aggregate: "sum",
                 type: "quantitative",
-                title: "Total Number of Internet Users [thousands]",
+                title: "Number of Internet Users",
             },
             color: {
                 field: "speed",
@@ -135,6 +118,7 @@ const VegaLiteSpec = {
         height: 100,
         mark: {
             type: "area",
+            interpolate: "monotone",
         },
         params: [{
             name: "brush",
@@ -144,15 +128,17 @@ const VegaLiteSpec = {
             x: {
                 field: "year",
                 type: "ordinal",
-                title: "Year"
+                title: "Year",
             },
             y: {
-                field: "total_num_users",
+                field: "real_num_users",
                 aggregate: "sum",
                 type: "quantitative",
-                title: "Total Number of Internet Users [thousands]",
+                title: "Number of Internet Users",
             },
-            // color: "#d4b9da",
+            color: {
+                value: "#deb2c5"
+            },
             tooltip: [
                 { field: "year", type: "ordinal", title: "Year" },
                 { field: "real_total_num_users", type: "quantitative", title: "Total number of Users", format: ",.0f" },
@@ -162,4 +148,4 @@ const VegaLiteSpec = {
 }
 
 
-vegaEmbed('#vis', VegaLiteSpec);
+vegaEmbed('#vis1', VegaLiteSpec);
