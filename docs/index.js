@@ -18,8 +18,6 @@
 const VegaLiteSpec = {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     title: "Australian Internet Speeds over Time",
-    width: 800,
-    height: 500,
     data: {
         url: "data/internet_activity/internet_speeds.csv",
         format: {
@@ -52,6 +50,9 @@ const VegaLiteSpec = {
         }
     }],
     transform: [{
+        filter: "speed_selection == null || datum.speed == speed_selection"
+    },
+    {
         calculate: "if(datum.speed === '< 256kbps', 0, if(datum.speed === '256kbps - 512kbps',1, if(datum.speed === '512kbps - 1.5Mbps', 2, if(datum.speed === '1.5Mbps - 8Mbps', 3, if(datum.speed === '8Mbps - 24Mbps', 4, if(datum.speed === '> 24Mbps', 5, 6))))))",
         as: "speedOrder",
     },
@@ -68,57 +69,96 @@ const VegaLiteSpec = {
         as: "real_num_users",
     },
     {
-        calculate: "datum.num_users / datum.total_num_users * 100",
-        as: "percent_of_users",
+        calculate: "datum.total_num_users * 1000",
+        as: "real_total_num_users",
     },
     {
-        filter: "speed_selection == null || datum.speed == speed_selection"
+        calculate: "datum.num_users / datum.total_num_users * 100",
+        as: "percent_of_users",
     }],
-    mark: {
-        type: "bar",
-    },
-    selection: {
-        speed_highlight: {
-            type: "multi",
-            fields: ["speed"],
-            bind: "legend"
+    vconcat: [{
+        width: 800,
+        height: 500,
+        mark: {
+            type: "bar",
+        },
+        selection: {
+            speed_highlight: {
+                type: "multi",
+                fields: ["speed"],
+                bind: "legend"
+            }
+        },
+        encoding: {
+            x: {
+                field: "year",
+                type: "ordinal",
+                title: "Year",
+                scale: {
+                    domain: {
+                        param: "brush"
+                    }
+                },
+            },
+            y: {
+                field: "num_users",
+                aggregate: "sum",
+                type: "quantitative",
+                title: "Total Number of Internet Users [thousands]",
+            },
+            color: {
+                field: "speed",
+                title: "Speed Ranges",
+                scale: {
+                    domain: ["< 256kbps", "256kbps - 512kbps", "512kbps - 1.5Mbps", "1.5Mbps - 8Mbps", "8Mbps - 24Mbps", "> 24Mbps"],
+                    range: ["#d4b9da", "#c994c7", "#df65b0", "#e7298a", "#ce1256", "#91003f"],
+                    type: "ordinal",
+                },
+            },
+            opacity: {
+                condition: { selection: "speed_highlight", value: 1 },
+                value: 0.3
+            },
+            order: {
+                field: "speedOrder"
+            },
+            tooltip: [
+                { field: "year", type: "ordinal", title: "Year" },
+                { field: "speed", type: "ordinal", title: "Speed Tier" },
+                { field: "percent_of_users", type: "quantitative", title: "Percent at this Speed Tier (\%)", format: ".1f" },
+                { field: "real_num_users", type: "quantitative", title: "Number of Users", format: ",.0f" },
+            ]
         }
     },
-    encoding: {
-        x: {
-            field: "year",
-            type: "ordinal",
-            title: "Year"
+    {
+        width: 800,
+        height: 100,
+        mark: {
+            type: "area",
         },
-        y: {
-            field: "num_users",
-            aggregate: "sum",
-            type: "quantitative",
-            title: "Total Number of Internet Users [thousands]",
-            condition: { selection: "speed_highlight", value: 0.6 }
-        },
-        color: {
-            field: "speed",
-            title: "Speed Ranges",
-            scale: {
-                domain: ["< 256kbps", "256kbps - 512kbps", "512kbps - 1.5Mbps", "1.5Mbps - 8Mbps", "8Mbps - 24Mbps", "> 24Mbps"],
-                range: ["#d4b9da", "#c994c7", "#df65b0", "#e7298a", "#ce1256", "#91003f"],
+        params: [{
+            name: "brush",
+            select: { type: "interval", encodings: ["x"] }
+        }],
+        encoding: {
+            x: {
+                field: "year",
                 type: "ordinal",
+                title: "Year"
             },
-        },
-        opacity: {
-            condition: { selection: "speed_highlight", value: 1 },
-            value: 0.3
-        },
-        order: {
-            field: "speedOrder"
-        },
-        tooltip: [
-            { field: "speed", type: "ordinal", title: "Speed Tier" },
-            { field: "percent_of_users", type: "quantitative", title: "Percent at this Speed Tier (\%)", format: ".1f" },
-            { field: "real_num_users", type: "quantitative", title: "Number of Users" },
-        ]
-    }
+            y: {
+                field: "total_num_users",
+                aggregate: "sum",
+                type: "quantitative",
+                title: "Total Number of Internet Users [thousands]",
+            },
+            // color: "#d4b9da",
+            tooltip: [
+                { field: "year", type: "ordinal", title: "Year" },
+                { field: "real_total_num_users", type: "quantitative", title: "Total number of Users", format: ",.0f" },
+            ],
+        }
+    }]
 }
 
 
