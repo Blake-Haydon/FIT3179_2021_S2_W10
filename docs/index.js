@@ -23,12 +23,18 @@ const VegaLiteSpec = {
     },
     transform: [{
         calculate: "if(datum.speed === '< 256kbps', 0, if(datum.speed === '256kbps - 512kbps',1, if(datum.speed === '512kbps - 1.5Mbps', 2, if(datum.speed === '1.5Mbps - 8Mbps', 3, if(datum.speed === '8Mbps - 24Mbps', 4, if(datum.speed === '> 24Mbps', 5, 6))))))",
-        as: "speedOrder"
+        as: "speedOrder",
+    },
+    {
+        calculate: "datum.num_users * 1000",
+        as: "real_num_users",
     }],
     title: "Australian Internet Speeds over Time",
     width: 700,
     height: 400,
-    mark: "bar",
+    mark: {
+        type: "bar",
+    },
     encoding: {
         x: {
             field: "year",
@@ -50,7 +56,13 @@ const VegaLiteSpec = {
                 type: "ordinal",
             },
         },
-        order: { field: "speedOrder" }
+        order: {
+            field: "speedOrder"
+        },
+        tooltip: [
+            { field: "speed", type: "ordinal", title: "Speed Tier" },
+            { field: "real_num_users", type: "quantitative", title: "Number of Users" }
+        ]
     }
 }
 
