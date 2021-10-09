@@ -21,6 +21,10 @@ const VegaLiteSpec = {
             type: "csv"
         }
     },
+    transform: [{
+        calculate: "if(datum.speed === '< 256kbps', 0, if(datum.speed === '256kbps - 512kbps',1, if(datum.speed === '512kbps - 1.5Mbps', 2, if(datum.speed === '1.5Mbps - 8Mbps', 3, if(datum.speed === '8Mbps - 24Mbps', 4, if(datum.speed === '> 24Mbps', 5, 6))))))",
+        as: "speedOrder"
+    }],
     width: 700,
     height: 400,
     mark: "bar",
@@ -44,7 +48,8 @@ const VegaLiteSpec = {
                 range: ["#f1eef6", "#d4b9da", "#c994c7", "#df65b0", "#dd1c77", "#980043"],
                 type: "ordinal",
             },
-        }
+        },
+        order: { field: "speedOrder" }
     }
 }
 
