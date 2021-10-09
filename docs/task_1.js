@@ -1,4 +1,4 @@
-const VegaLiteSpec = {
+const VegaLiteSpec1 = {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     title: "Australian Internet Speeds over Time",
     data: {
@@ -148,4 +148,4 @@ const VegaLiteSpec = {
 }
 
 
-vegaEmbed('#vis1', VegaLiteSpec);
+vegaEmbed('#vis1', VegaLiteSpec1);
