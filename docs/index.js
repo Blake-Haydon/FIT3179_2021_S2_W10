@@ -13,8 +13,13 @@
 // This could be the map that you created in the week 9 homework and 
 // the visualisation you created in Task 1 of this homework.
 
+
+// TODO: ADD PERCENTAGES
 const VegaLiteSpec = {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+    title: "Australian Internet Speeds over Time",
+    width: 800,
+    height: 500,
     data: {
         url: "data/internet_activity/internet_speeds.csv",
         format: {
@@ -51,12 +56,24 @@ const VegaLiteSpec = {
         as: "speedOrder",
     },
     {
+        joinaggregate: [{
+            op: "sum",
+            field: "num_users",
+            as: "total_num_users"
+        }],
+        groupby: ["year"]
+    },
+    {
         calculate: "datum.num_users * 1000",
         as: "real_num_users",
+    },
+    {
+        calculate: "datum.num_users / datum.total_num_users * 100",
+        as: "percent_of_users",
+    },
+    {
+        filter: "speed_selection == null || datum.speed == speed_selection"
     }],
-    title: "Australian Internet Speeds over Time",
-    width: 700,
-    height: 400,
     mark: {
         type: "bar",
     },
@@ -91,14 +108,15 @@ const VegaLiteSpec = {
         },
         opacity: {
             condition: { selection: "speed_highlight", value: 1 },
-            value: 0.5
+            value: 0.3
         },
         order: {
             field: "speedOrder"
         },
         tooltip: [
             { field: "speed", type: "ordinal", title: "Speed Tier" },
-            { field: "real_num_users", type: "quantitative", title: "Number of Users" }
+            { field: "percent_of_users", type: "quantitative", title: "Percent at this Speed Tier (\%)", format: ".1f" },
+            { field: "real_num_users", type: "quantitative", title: "Number of Users" },
         ]
     }
 }
